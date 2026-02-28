@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Цифровой рубль. Эволюция доверия</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+
+  --bg-main:#2C2C2C;
+
+  --steel:#4A6572;
+
+  --turquoise:#2F7F7F;
+
+  --graphite:#3A3A3A;
+
+  --text-light:#EAEAEA;
+
+}
+
+* {box-sizing:border-box; margin:0; padding:0;}
+
+body {
+
+  font-family:'Inter',sans-serif;
+
+  background:var(--bg-main);
+
+  color:var(--text-light);
+
+  line-height:1.6;
+
+}
+
+header {
+
+  padding:40px 60px;
+
+  border-bottom:1px solid var(--graphite);
+
+}
+
+h1 {font-weight:600; font-size:32px;}
+
+.subtitle {margin-top:8px; color:#b0b0b0;}
+
+nav {
+
+  margin-top:20px;
+
+  display:flex;
+
+  gap:20px;
+
+}
+
+nav a {
+
+  text-decoration:none;
+
+  color:var(--steel);
+
+  font-weight:500;
+
+  transition:0.3s;
+
+}
+
+nav a:hover {color:var(--turquoise);}
+
+section {padding:60px;}
+
+h2 {margin-bottom:30px; font-weight:600;}
+
+.timeline {
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:20px;
+
+  flex-wrap:wrap;
+
+}
+
+.timeline-item {
+
+  flex:1;
+
+  min-width:200px;
+
+  padding:20px;
+
+  border:1px solid var(--graphite);
+
+  border-radius:8px;
+
+  text-align:center;
+
+  cursor:pointer;
+
+  transition:0.3s;
+
+}
+
+.timeline-item:hover {
+
+  border-color:var(--turquoise);
+
+  transform:translateY(-5px);
+
+}
+
+.timeline-item:hover span {color:var(--turquoise);}
+
+.timeline-item span {
+
+  display:block;
+
+  margin-top:10px;
+
+  font-size:14px;
+
+  color:#aaa;
+
+}
+
+.tooltip {
+
+  margin-top:30px;
+
+  min-height:60px;
+
+  padding:20px;
+
+  background:var(--graphite);
+
+  border-radius:8px;
+
+}
+
+.matrix {
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+  gap:20px;
+
+}
+
+.card {
+
+  background:var(--graphite);
+
+  padding:25px;
+
+  border-radius:10px;
+
+  transition:0.3s;
+
+}
+
+.card:hover {
+
+  transform:translateY(-6px);
+
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+
+}
+
+.card h3 {margin-bottom:15px;}
+
+.card ul {list-style:none;}
+
+.card ul li {margin-bottom:8px; font-size:14px;}
+
+.hash-visual {
+
+  display:flex;
+
+  align-items:center;
+
+  gap:20px;
+
+  flex-wrap:wrap;
+
+}
+
+.hash-box {
+
+  background:var(--graphite);
+
+  padding:20px;
+
+  border-radius:8px;
+
+}
+
+input {
+
+  padding:10px;
+
+  border-radius:6px;
+
+  border:none;
+
+  width:250px;
+
+}
+
+.cta {
+
+  text-align:center;
+
+  padding:80px 40px;
+
+  border-top:1px solid var(--graphite);
+
+}
+
+button {
+
+  padding:12px 25px;
+
+  background:var(--turquoise);
+
+  border:none;
+
+  border-radius:6px;
+
+  color:white;
+
+  cursor:pointer;
+
+  transition:0.3s;
+
+}
+
+button:hover {background:var(--steel);}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+  <h1>Цифровой рубль. Эволюция доверия</h1>
+
+  <p class="subtitle">Интерактивный гид по третьей форме денег: от истории к безопасности.</p>
+
+  <nav>
+
+    <a href="#evolution">Эволюция</a>
+
+    <a href="#comparison">Сравнение</a>
+
+    <a href="#security">Безопасность</a>
+
+  </nav>
+
+</header>
+
+<section id="evolution">
+
+  <h2>Эволюция: от чешуйки до кода</h2>
+
+  <div class="timeline">
+
+    <div class="timeline-item" onmouseover="showText(1)">
+
+      🪙 Монеты
+
+      <span>Материальная ценность</span>
+
+    </div>
+
+    <div class="timeline-item" onmouseover="showText(2)">
+
+      💵 Банкноты
+
+      <span>Государственная гарантия</span>
+
+    </div>
+
+    <div class="timeline-item" onmouseover="showText(3)">
+
+      💳 Карты
+
+      <span>Дематериализация</span>
+
+    </div>
+
+    <div class="timeline-item" onmouseover="showText(4)">
+
+      📱 Цифровой рубль
+
+      <span>Программируемые деньги</span>
+
+    </div>
+
+  </div>
+
+  <div class="tooltip" id="tooltip">Наведите курсор на этап эволюции.</div>
+
+</section>
+
+<section id="comparison">
+
+  <h2>Наличные vs Безналичные vs Цифровые</h2>
+
+  <div class="matrix">
+
+    <div class="card">
+
+      <h3>Наличные</h3>
+
+      <ul>
+
+        <li>Где хранятся: В кошельке</li>
+
+        <li>Проценты: Нет</li>
+
+        <li>Офлайн-доступ: Да</li>
+
+        <li>Анонимность: Высокая</li>
+
+      </ul>
+
+    </div>
+
+    <div class="card">
+
+      <h3>Безналичные</h3>
+
+      <ul>
+
+        <li>Где хранятся: В банке</li>
+
+        <li>Проценты: Возможны</li>
+
+        <li>Офлайн-доступ: Нет</li>
+
+        <li>Анонимность: Низкая</li>
+
+      </ul>
+
+    </div>
+
+    <div class="card">
+
+      <h3>Цифровой рубль</h3>
+
+      <ul>
+
+        <li>Где хранятся: На платформе ЦБ</li>
+
+        <li>Проценты: Нет</li>
+
+        <li>Офлайн-доступ: Планируется</li>
+
+        <li>Анонимность: Ограниченная</li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section id="security">
+
+  <h2>Как работает защита</h2>
+
+  <div class="hash-visual">
+
+    <div>
+
+      <input type="text" id="inputData" placeholder="Введите данные..." oninput="generateHash()">
+
+    </div>
+
+    <div class="hash-box" id="hashOutput">
+
+      Хэш появится здесь
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <h2>Будущее денег — это доверие к коду</h2>
+
+  <button onclick="alert('Спасибо за интерес к цифровому рублю!')">Узнать больше</button>
+
+</section>
+
+<script>
+
+function showText(step) {
+
+  const texts = {
+
+    1: "Монеты имели собственную материальную ценность — металл.",
+
+    2: "Банкноты стали обеспечиваться государством.",
+
+    3: "Карты позволили отказаться от физической формы денег.",
+
+    4: "Цифровой рубль — это новая форма национальной валюты в цифровом виде."
+
+  };
+
+  document.getElementById("tooltip").innerText = texts[step];
+
+}
+
+function generateHash() {
+
+  const input = document.getElementById("inputData").value;
+
+  let hash = 0;
+
+  for (let i = 0; i < input.length; i++) {
+
+    hash = ((hash << 5) - hash) + input.charCodeAt(i);
+
+    hash |= 0;
+
+  }
+
+  document.getElementById("hashOutput").innerText = "Хэш: " + hash;
+
+}
+
+</script>
+
+</body>
+
+</html>
