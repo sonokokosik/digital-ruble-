@@ -451,7 +451,106 @@ function generateHash() {
 }
 
 </script>
+<section style="padding:60px;">
 
+<h2 style="margin-bottom:30px;">Интерактив: проверь своё понимание</h2>
+
+<div style="margin-bottom:50px;">
+
+<h3>Миф или факт?</h3>
+
+<p id="mythText">Цифровой рубль — это криптовалюта.</p>
+
+<button onclick="answerMyth(false)">Миф</button>
+
+<button onclick="answerMyth(true)">Факт</button>
+
+<p id="mythResult" style="margin-top:15px;font-weight:600;"></p>
+
+</div>
+
+<div style="margin-bottom:50px;">
+
+<h3>Программируемые деньги</h3>
+
+<p>Вам пришла социальная выплата.</p>
+
+<button onclick="pay('food')">Купить продукты</button>
+
+<button onclick="pay('crypto')">Купить криптовалюту</button>
+
+<p id="payResult" style="margin-top:15px;font-weight:600;"></p>
+
+</div>
+
+<div style="margin-bottom:50px;">
+
+<h3>Ваше мнение</h3>
+
+<p>Вы бы пользовались цифровым рублём?</p>
+
+<button onclick="vote('yes')">Да</button>
+
+<button onclick="vote('no')">Нет</button>
+
+<p id="voteResult" style="margin-top:15px;font-weight:600;"></p>
+
+</div>
+
+</section>
+
+<script>
+
+let yes = 0;
+
+let no = 0;
+
+function answerMyth(isFact) {
+
+  const result = document.getElementById("mythResult");
+
+  if (!isFact) {
+
+    result.innerText = "Верно ✔ Это НЕ криптовалюта. Его выпускает Центральный банк.";
+
+  } else {
+
+    result.innerText = "Неверно ❌ Цифровой рубль — это государственная валюта.";
+
+  }
+
+}
+
+function pay(type) {
+
+  const result = document.getElementById("payResult");
+
+  if (type === "food") {
+
+    result.innerText = "Платёж разрешён ✔";
+
+  } else {
+
+    result.innerText = "Операция отклонена ❌ Эти деньги можно тратить только на продукты.";
+
+  }
+
+}
+
+function vote(choice) {
+
+  if (choice === "yes") yes++;
+
+  if (choice === "no") no++;
+
+  document.getElementById("voteResult").innerText =
+
+    "За: " + yes + " | Против: " + no;
+
+}
+
+</script>
 </body>
+
 
 </html>
