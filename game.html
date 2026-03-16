@@ -13,45 +13,50 @@
 <style>
 
 body{
+
 font-family:'Inter',sans-serif;
-background:#2C2C2C;
-color:#EAEAEA;
+background:linear-gradient(135deg,#2F7F7F,#4A6572);
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 margin:0;
-}
-
-.chat{
-
-width:420px;
-background:#3A3A3A;
-padding:25px;
-border-radius:12px;
 
 }
 
-.message{
+.game{
 
+width:480px;
+background:#2C2C2C;
+padding:30px;
+border-radius:14px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+
+}
+
+.shark{
+
+font-size:70px;
 margin-bottom:15px;
-padding:10px 15px;
-border-radius:8px;
-max-width:80%;
+transition:0.3s;
 
 }
 
-.bot{
+.question{
 
-background:#2F7F7F;
+margin-bottom:20px;
+font-size:16px;
 
 }
 
 .buttons{
 
-margin-top:20px;
 display:flex;
 gap:10px;
+justify-content:center;
+flex-wrap:wrap;
 
 }
 
@@ -61,18 +66,27 @@ padding:10px 15px;
 border:none;
 border-radius:6px;
 cursor:pointer;
+font-size:14px;
 
 }
 
-.good{
+button:hover{
 
-background:#2ecc71;
+transform:scale(1.05);
 
 }
 
-.bad{
+.result{
 
-background:#c0392b;
+margin-top:20px;
+font-weight:600;
+
+}
+
+.score{
+
+margin-top:10px;
+color:#2ecc71;
 
 }
 
@@ -82,49 +96,157 @@ background:#c0392b;
 
 <body>
 
-<div class="chat">
+<div class="game">
 
-<div class="message bot" id="question">
+<div class="shark" id="shark">🦈</div>
 
-🦈 Акула-детектив:  
-Тебе пишут:  
-"Инвестируй сегодня и получи 40% прибыли за месяц!"
+<div class="question" id="question"></div>
 
-Это надёжное предложение?
+<div class="buttons" id="buttons"></div>
 
-</div>
+<div class="result" id="result"></div>
 
-<div class="buttons">
-
-<button class="bad" onclick="answer(false)">Это мошенничество</button>
-
-<button class="good" onclick="answer(true)">Это реальная инвестиция</button>
-
-</div>
-
-<div class="message bot" id="result"></div>
+<div class="score" id="score"></div>
 
 </div>
 
 <script>
 
+let level = 0;
+let correct = 0;
+
+const questions = [
+
+{
+q:"Вам предлагают инвестировать и получать 40% прибыли в месяц.",
+a1:"Это реальная инвестиция",
+a2:"Это мошенничество",
+correct:2
+},
+
+{
+q:"В Telegram пишет 'служба безопасности банка' и просит перевести деньги.",
+a1:"Это безопасно",
+a2:"Это мошенничество",
+correct:2
+},
+
+{
+q:"Сайт обещает 'гарантированный доход 100% в год без риска'.",
+a1:"Это инвестиция",
+a2:"Это подозрительно",
+correct:2
+},
+
+{
+q:"Вам пришла ссылка 'получите подарок от банка'. Нужно ввести данные карты.",
+a1:"Это фишинг",
+a2:"Это акция банка",
+correct:1
+},
+
+{
+q:"Друг предлагает вложиться в 'секретную криптовалюту', которая скоро вырастет.",
+a1:"Проверить и не спешить",
+a2:"Срочно вложиться",
+correct:1
+}
+
+];
+
+function loadQuestion(){
+
+const q = questions[level];
+
+document.getElementById("question").innerText=q.q;
+
+const buttons=document.getElementById("buttons");
+
+buttons.innerHTML="";
+
+const b1=document.createElement("button");
+b1.innerText=q.a1;
+b1.onclick=()=>answer(1);
+
+const b2=document.createElement("button");
+b2.innerText=q.a2;
+b2.onclick=()=>answer(2);
+
+buttons.appendChild(b1);
+buttons.appendChild(b2);
+
+document.getElementById("result").innerText="";
+
+}
+
 function answer(choice){
 
-const result = document.getElementById("result");
+const shark=document.getElementById("shark");
 
-if(!choice){
+if(choice===questions[level].correct){
 
-result.innerText = "Верно! ✔ Доходность 40% в месяц — типичный признак финансовой пирамиды.";
+correct++;
+
+document.getElementById("result").innerText="✔ Верно!";
+shark.innerText="😎🦈";
+
+}else{
+
+document.getElementById("result").innerText="❌ Это ошибка.";
+shark.innerText="😡🦈";
 
 }
 
-else{
+setTimeout(nextLevel,1500);
 
-result.innerText = "Неверно ❌ Такие обещания почти всегда означают мошенничество.";
+}
+
+function nextLevel(){
+
+level++;
+
+if(level<questions.length){
+
+document.getElementById("shark").innerText="🦈";
+loadQuestion();
+
+}else{
+
+finishGame();
 
 }
 
 }
+
+function finishGame(){
+
+document.getElementById("buttons").innerHTML="";
+document.getElementById("question").innerText="Игра окончена";
+
+let rating="Новичок";
+
+if(correct>=4) rating="Финансовый эксперт";
+else if(correct>=3) rating="Финансово грамотный";
+
+document.getElementById("result").innerText=
+"Правильных ответов: "+correct+" из 5";
+
+document.getElementById("score").innerText=
+"Твой уровень: "+rating;
+
+document.getElementById("shark").innerText="🎓🦈";
+
+const restart=document.createElement("button");
+
+restart.innerText="Сыграть ещё раз";
+
+restart.onclick=()=>location.reload();
+
+document.getElementById("buttons").appendChild(restart);
+
+}
+
+loadQuestion();
 
 </script>
 
