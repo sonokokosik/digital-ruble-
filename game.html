@@ -2,92 +2,77 @@
 <html lang="ru">
 
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Финансовый детектив</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 
 body{
-
-font-family:'Inter',sans-serif;
-background:linear-gradient(135deg,#2F7F7F,#4A6572);
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
 margin:0;
-
-}
-
-.game{
-
-width:480px;
-background:#2C2C2C;
-padding:30px;
-border-radius:14px;
+font-family:Arial;
+background:linear-gradient(#02121f,#06344f);
+color:white;
 text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
-
 }
 
-.shark{
+#gameContainer{
+max-width:900px;
+margin:auto;
+padding:40px;
+}
 
-font-size:70px;
-margin-bottom:15px;
+h1{
+margin-bottom:10px;
+}
+
+#shark{
+font-size:120px;
 transition:0.3s;
-
 }
 
-.question{
-
-margin-bottom:20px;
-font-size:16px;
-
+.sharkHappy{
+transform:scale(1.2);
 }
 
-.buttons{
+.sharkAngry{
+transform:scale(1.2);
+color:#ff4c4c;
+}
 
-display:flex;
-gap:10px;
-justify-content:center;
-flex-wrap:wrap;
-
+#question{
+font-size:22px;
+margin:30px 0;
 }
 
 button{
-
-padding:10px 15px;
+padding:12px 25px;
+margin:10px;
 border:none;
 border-radius:6px;
+background:#2F7F7F;
+color:white;
 cursor:pointer;
-font-size:14px;
-
+font-size:16px;
 }
 
 button:hover{
-
-transform:scale(1.05);
-
+background:#4A6572;
 }
 
-.result{
-
+#result{
 margin-top:20px;
-font-weight:600;
-
+font-size:18px;
+min-height:30px;
 }
 
-.score{
+#score{
+margin-top:20px;
+font-size:20px;
+}
 
-margin-top:10px;
-color:#2ecc71;
-
+#finalScreen{
+display:none;
+margin-top:40px;
 }
 
 </style>
@@ -96,157 +81,213 @@ color:#2ecc71;
 
 <body>
 
-<div class="game">
+<div id="gameContainer">
 
-<div class="shark" id="shark">🦈</div>
+<h1>🦈 Финансовый детектив</h1>
 
-<div class="question" id="question"></div>
+<div id="shark">🦈</div>
 
-<div class="buttons" id="buttons"></div>
+<div id="question">Нажми начать игру</div>
 
-<div class="result" id="result"></div>
+<div id="answers"></div>
 
-<div class="score" id="score"></div>
+<div id="result"></div>
+
+<div id="score"></div>
+
+<button onclick="startGame()">Начать игру</button>
+
+<div id="finalScreen">
+<h2 id="finalText"></h2>
+<button onclick="restartGame()">🔄 Сыграть ещё раз</button>
+</div>
 
 </div>
 
 <script>
 
-let level = 0;
-let correct = 0;
+let level=0
+let score=0
 
-const questions = [
+const shark=document.getElementById("shark")
+
+const questions=[
 
 {
-q:"Вам предлагают инвестировать и получать 40% прибыли в месяц.",
-a1:"Это реальная инвестиция",
-a2:"Это мошенничество",
-correct:2
+q:"Вам предлагают инвестицию с доходностью 30% в месяц.",
+answers:[
+{text:"Это подозрительно",correct:true,phrase:"🦈 Пахнет мошенничеством!"},
+{text:"Это хорошая инвестиция",correct:false,phrase:"🦈 Слишком наивно..."}
+]
 },
 
 {
-q:"В Telegram пишет 'служба безопасности банка' и просит перевести деньги.",
-a1:"Это безопасно",
-a2:"Это мошенничество",
-correct:2
+q:"Вам пишет 'служба поддержки банка' в Telegram.",
+answers:[
+{text:"Это мошенники",correct:true,phrase:"🦈 Верно. Банки не пишут первыми."},
+{text:"Это нормально",correct:false,phrase:"🦈 Опасная ошибка."}
+]
 },
 
 {
-q:"Сайт обещает 'гарантированный доход 100% в год без риска'.",
-a1:"Это инвестиция",
-a2:"Это подозрительно",
-correct:2
+q:"Где хранятся цифровые рубли?",
+answers:[
+{text:"На платформе Центрального банка",correct:true,phrase:"🦈 Отлично. Ты знаешь систему."},
+{text:"На банковской карте",correct:false,phrase:"🦈 Не совсем. Это другая форма денег."}
+]
 },
 
 {
-q:"Вам пришла ссылка 'получите подарок от банка'. Нужно ввести данные карты.",
-a1:"Это фишинг",
-a2:"Это акция банка",
-correct:1
+q:"Цифровой рубль — это криптовалюта?",
+answers:[
+{text:"Нет",correct:true,phrase:"🦈 Верно. Его выпускает государство."},
+{text:"Да",correct:false,phrase:"🦈 Нет. Криптовалюты децентрализованы."}
+]
 },
 
 {
-q:"Друг предлагает вложиться в 'секретную криптовалюту', которая скоро вырастет.",
-a1:"Проверить и не спешить",
-a2:"Срочно вложиться",
-correct:1
+q:"Программируемые деньги могут ограничивать использование средств?",
+answers:[
+{text:"Да",correct:true,phrase:"🦈 Верно. Например социальные выплаты."},
+{text:"Нет",correct:false,phrase:"🦈 На самом деле могут."}
+]
 }
 
-];
+]
 
-function loadQuestion(){
+function startGame(){
 
-const q = questions[level];
+document.querySelector("button").style.display="none"
 
-document.getElementById("question").innerText=q.q;
-
-const buttons=document.getElementById("buttons");
-
-buttons.innerHTML="";
-
-const b1=document.createElement("button");
-b1.innerText=q.a1;
-b1.onclick=()=>answer(1);
-
-const b2=document.createElement("button");
-b2.innerText=q.a2;
-b2.onclick=()=>answer(2);
-
-buttons.appendChild(b1);
-buttons.appendChild(b2);
-
-document.getElementById("result").innerText="";
+showQuestion()
 
 }
 
-function answer(choice){
+function showQuestion(){
 
-const shark=document.getElementById("shark");
+if(level>=questions.length){
 
-if(choice===questions[level].correct){
+finishGame()
 
-correct++;
+return
 
-document.getElementById("result").innerText="✔ Верно!";
-shark.innerText="😎🦈";
+}
+
+const q=questions[level]
+
+document.getElementById("question").innerText=q.q
+
+const answersDiv=document.getElementById("answers")
+
+answersDiv.innerHTML=""
+
+q.answers.forEach(a=>{
+
+const btn=document.createElement("button")
+
+btn.innerText=a.text
+
+btn.onclick=()=>answer(a)
+
+answersDiv.appendChild(btn)
+
+})
+
+}
+
+function answer(a){
+
+document.getElementById("result").innerText=a.phrase
+
+if(a.correct){
+
+score++
+
+shark.className="sharkHappy"
 
 }else{
 
-document.getElementById("result").innerText="❌ Это ошибка.";
-shark.innerText="😡🦈";
+shark.className="sharkAngry"
 
 }
 
-setTimeout(nextLevel,1500);
+setTimeout(()=>{
+
+shark.className=""
+
+level++
+
+showQuestion()
+
+updateScore()
+
+},1200)
 
 }
 
-function nextLevel(){
+function updateScore(){
 
-level++;
-
-if(level<questions.length){
-
-document.getElementById("shark").innerText="🦈";
-loadQuestion();
-
-}else{
-
-finishGame();
-
-}
+document.getElementById("score").innerText="Правильных ответов: "+score
 
 }
 
 function finishGame(){
 
-document.getElementById("buttons").innerHTML="";
-document.getElementById("question").innerText="Игра окончена";
+document.getElementById("question").style.display="none"
 
-let rating="Новичок";
+document.getElementById("answers").style.display="none"
 
-if(correct>=4) rating="Финансовый эксперт";
-else if(correct>=3) rating="Финансово грамотный";
+document.getElementById("result").style.display="none"
 
-document.getElementById("result").innerText=
-"Правильных ответов: "+correct+" из 5";
+document.getElementById("score").style.display="none"
 
-document.getElementById("score").innerText=
-"Твой уровень: "+rating;
+document.getElementById("finalScreen").style.display="block"
 
-document.getElementById("shark").innerText="🎓🦈";
+let rating=""
 
-const restart=document.createElement("button");
+if(score<=2){
 
-restart.innerText="Сыграть ещё раз";
-
-restart.onclick=()=>location.reload();
-
-document.getElementById("buttons").appendChild(restart);
+rating="🐟 Новичок"
 
 }
 
-loadQuestion();
+else if(score<=4){
+
+rating="🦈 Финансовый детектив"
+
+}
+
+else{
+
+rating="🏆 Ты финансово грамотен!"
+
+}
+
+document.getElementById("finalText").innerText="Результат: "+score+"/5 — "+rating
+
+}
+
+function restartGame(){
+
+level=0
+score=0
+
+document.getElementById("finalScreen").style.display="none"
+
+document.getElementById("question").style.display="block"
+document.getElementById("answers").style.display="block"
+document.getElementById("result").style.display="block"
+document.getElementById("score").style.display="block"
+
+document.querySelector("button").style.display="inline-block"
+
+document.getElementById("question").innerText="Нажми начать игру"
+
+document.getElementById("answers").innerHTML=""
+document.getElementById("result").innerText=""
+document.getElementById("score").innerText=""
+
+}
 
 </script>
 
