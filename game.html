@@ -10,24 +10,51 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(#02121f,#06344f);
 color:white;
 text-align:center;
+background:linear-gradient(#02121f,#06344f);
+overflow:hidden;
 }
 
-#gameContainer{
+/* контейнер игры */
+
+#game{
 max-width:900px;
 margin:auto;
 padding:40px;
+position:relative;
+z-index:2;
 }
 
-h1{
-margin-bottom:10px;
+/* океанские пузыри */
+
+.bubble{
+position:absolute;
+bottom:-100px;
+width:20px;
+height:20px;
+background:rgba(255,255,255,0.2);
+border-radius:50%;
+animation:rise 12s infinite;
 }
+
+@keyframes rise{
+0%{transform:translateY(0);}
+100%{transform:translateY(-1200px);}
+}
+
+/* акула */
 
 #shark{
 font-size:120px;
+animation:swim 4s infinite ease-in-out;
 transition:0.3s;
+}
+
+@keyframes swim{
+0%{transform:translateX(-20px);}
+50%{transform:translateX(20px);}
+100%{transform:translateX(-20px);}
 }
 
 .sharkHappy{
@@ -35,9 +62,11 @@ transform:scale(1.2);
 }
 
 .sharkAngry{
-transform:scale(1.2);
 color:#ff4c4c;
+transform:scale(1.2);
 }
+
+/* текст */
 
 #question{
 font-size:22px;
@@ -61,16 +90,21 @@ background:#4A6572;
 
 #result{
 margin-top:20px;
-font-size:18px;
 min-height:30px;
+font-size:18px;
+}
+
+#timer{
+font-size:18px;
+margin-top:10px;
+color:#9fd3ff;
 }
 
 #score{
-margin-top:20px;
-font-size:20px;
+margin-top:10px;
 }
 
-#finalScreen{
+#final{
 display:none;
 margin-top:40px;
 }
@@ -81,11 +115,22 @@ margin-top:40px;
 
 <body>
 
-<div id="gameContainer">
+<!-- пузыри -->
+
+<div class="bubble" style="left:10%"></div>
+<div class="bubble" style="left:20%;animation-duration:9s"></div>
+<div class="bubble" style="left:35%;animation-duration:11s"></div>
+<div class="bubble" style="left:55%;animation-duration:10s"></div>
+<div class="bubble" style="left:75%;animation-duration:13s"></div>
+<div class="bubble" style="left:90%;animation-duration:8s"></div>
+
+<div id="game">
 
 <h1>🦈 Финансовый детектив</h1>
 
 <div id="shark">🦈</div>
+
+<div id="timer"></div>
 
 <div id="question">Нажми начать игру</div>
 
@@ -95,11 +140,14 @@ margin-top:40px;
 
 <div id="score"></div>
 
-<button onclick="startGame()">Начать игру</button>
+<button id="startBtn" onclick="startGame()">Начать игру</button>
 
-<div id="finalScreen">
+<div id="final">
+
 <h2 id="finalText"></h2>
-<button onclick="restartGame()">🔄 Сыграть ещё раз</button>
+
+<button onclick="restart()">🔄 Сыграть ещё раз</button>
+
 </div>
 
 </div>
@@ -108,48 +156,50 @@ margin-top:40px;
 
 let level=0
 let score=0
+let timer=15
+let timerInterval
 
 const shark=document.getElementById("shark")
 
 const questions=[
 
 {
-q:"Вам предлагают инвестицию с доходностью 30% в месяц.",
+q:"Доходность 35% в месяц предлагает 'инвест-платформа'.",
 answers:[
-{text:"Это подозрительно",correct:true,phrase:"🦈 Пахнет мошенничеством!"},
-{text:"Это хорошая инвестиция",correct:false,phrase:"🦈 Слишком наивно..."}
+{text:"Это почти точно мошенничество",correct:true,phrase:"🦈 Отлично. Такие проценты нереальны."},
+{text:"Это нормальная инвестиция",correct:false,phrase:"🦈 Нет. Это классическая финансовая пирамида."}
 ]
 },
 
 {
-q:"Вам пишет 'служба поддержки банка' в Telegram.",
+q:"Вам звонят и говорят перевести деньги на 'безопасный счёт'.",
 answers:[
-{text:"Это мошенники",correct:true,phrase:"🦈 Верно. Банки не пишут первыми."},
-{text:"Это нормально",correct:false,phrase:"🦈 Опасная ошибка."}
+{text:"Это мошенники",correct:true,phrase:"🦈 Верно. Банки не используют 'безопасные счета'."},
+{text:"Нужно срочно перевести",correct:false,phrase:"🦈 Опасная ошибка."}
 ]
 },
 
 {
-q:"Где хранятся цифровые рубли?",
+q:"Кто выпускает цифровой рубль?",
 answers:[
-{text:"На платформе Центрального банка",correct:true,phrase:"🦈 Отлично. Ты знаешь систему."},
-{text:"На банковской карте",correct:false,phrase:"🦈 Не совсем. Это другая форма денег."}
+{text:"Центральный банк",correct:true,phrase:"🦈 Верно. Это государственная валюта."},
+{text:"Коммерческие банки",correct:false,phrase:"🦈 Нет. Банки только посредники."}
 ]
 },
 
 {
-q:"Цифровой рубль — это криптовалюта?",
+q:"Почему цифровой рубль не приносит проценты?",
 answers:[
-{text:"Нет",correct:true,phrase:"🦈 Верно. Его выпускает государство."},
-{text:"Да",correct:false,phrase:"🦈 Нет. Криптовалюты децентрализованы."}
+{text:"Он не является банковским вкладом",correct:true,phrase:"🦈 Отлично. Это форма денег, а не депозит."},
+{text:"Потому что технология не позволяет",correct:false,phrase:"🦈 Нет. Это экономическое решение."}
 ]
 },
 
 {
-q:"Программируемые деньги могут ограничивать использование средств?",
+q:"Что означает 'программируемые деньги'?",
 answers:[
-{text:"Да",correct:true,phrase:"🦈 Верно. Например социальные выплаты."},
-{text:"Нет",correct:false,phrase:"🦈 На самом деле могут."}
+{text:"Деньги можно тратить только на определённые цели",correct:true,phrase:"🦈 Верно. Например соцвыплаты."},
+{text:"Деньги можно программировать как криптовалюту",correct:false,phrase:"🦈 Не совсем. Это другая концепция."}
 ]
 }
 
@@ -157,7 +207,7 @@ answers:[
 
 function startGame(){
 
-document.querySelector("button").style.display="none"
+document.getElementById("startBtn").style.display="none"
 
 showQuestion()
 
@@ -167,11 +217,16 @@ function showQuestion(){
 
 if(level>=questions.length){
 
-finishGame()
+finish()
 
 return
 
 }
+
+timer=15
+updateTimer()
+
+timerInterval=setInterval(countdown,1000)
 
 const q=questions[level]
 
@@ -195,14 +250,41 @@ answersDiv.appendChild(btn)
 
 }
 
+function countdown(){
+
+timer--
+
+updateTimer()
+
+if(timer<=0){
+
+clearInterval(timerInterval)
+
+document.getElementById("result").innerText="🦈 Время вышло!"
+
+level++
+
+setTimeout(showQuestion,1000)
+
+}
+
+}
+
+function updateTimer(){
+
+document.getElementById("timer").innerText="⏱ Время: "+timer
+
+}
+
 function answer(a){
+
+clearInterval(timerInterval)
 
 document.getElementById("result").innerText=a.phrase
 
 if(a.correct){
 
 score++
-
 shark.className="sharkHappy"
 
 }else{
@@ -210,6 +292,8 @@ shark.className="sharkHappy"
 shark.className="sharkAngry"
 
 }
+
+updateScore()
 
 setTimeout(()=>{
 
@@ -219,9 +303,7 @@ level++
 
 showQuestion()
 
-updateScore()
-
-},1200)
+},1500)
 
 }
 
@@ -231,58 +313,42 @@ document.getElementById("score").innerText="Правильных ответов:
 
 }
 
-function finishGame(){
-
-document.getElementById("question").style.display="none"
+function finish(){
 
 document.getElementById("answers").style.display="none"
-
+document.getElementById("question").style.display="none"
+document.getElementById("timer").style.display="none"
 document.getElementById("result").style.display="none"
-
 document.getElementById("score").style.display="none"
 
-document.getElementById("finalScreen").style.display="block"
+document.getElementById("final").style.display="block"
 
 let rating=""
 
-if(score<=2){
-
-rating="🐟 Новичок"
-
-}
-
-else if(score<=4){
-
-rating="🦈 Финансовый детектив"
-
-}
-
-else{
-
-rating="🏆 Ты финансово грамотен!"
-
-}
+if(score<=2) rating="🐟 Новичок"
+else if(score<=4) rating="🦈 Финансовый детектив"
+else rating="🏆 Ты финансово грамотен!"
 
 document.getElementById("finalText").innerText="Результат: "+score+"/5 — "+rating
 
 }
 
-function restartGame(){
+function restart(){
 
 level=0
 score=0
 
-document.getElementById("finalScreen").style.display="none"
+document.getElementById("final").style.display="none"
 
-document.getElementById("question").style.display="block"
 document.getElementById("answers").style.display="block"
+document.getElementById("question").style.display="block"
+document.getElementById("timer").style.display="block"
 document.getElementById("result").style.display="block"
 document.getElementById("score").style.display="block"
 
-document.querySelector("button").style.display="inline-block"
+document.getElementById("startBtn").style.display="inline-block"
 
 document.getElementById("question").innerText="Нажми начать игру"
-
 document.getElementById("answers").innerHTML=""
 document.getElementById("result").innerText=""
 document.getElementById("score").innerText=""
