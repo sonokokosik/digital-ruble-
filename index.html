@@ -671,9 +671,9 @@ function vote(choice) {
   <section id="game-intro" style="padding:60px;text-align:center;">
   <h2>Проверь себя: защити деньги от ошибок 🦈</h2>
   <p>Система защищена, но деньги всё равно теряют. Почему? Потому что человек ошибается. Давай проверим, сможешь ли ты избежать ловушек!</p>
-  <button onclick="startGame()" style="padding:12px 25px;background:#2F7F7F;color:white;border:none;border-radius:6px;cursor:pointer;">
-    Начать игру
-  </button>
+  <a href="game.html">
+<button>Начать игру</button>
+</a>
 </section>
   <section id="game" style="padding:40px;display:none;">
   <h3>Выбери реакцию акулы на ситуацию</h3>
@@ -740,17 +740,6 @@ hacked = false;
 
 }
   
-document.getElementById("block2").style.background="#8e2a2a";
-
-document.getElementById("block2").innerHTML=
-"<h3>Блок 2</h3><p>Перевод: 100000 ₽ ❌</p><p>hash: ZZZ999</p>";
-
-document.getElementById("block3").style.background="#8e2a2a";
-
-document.getElementById("hackResult").innerText=
-"Система обнаружила изменение. Чтобы подделать перевод, нужно пересчитать все последующие блоки.";
-
-}
 </script>
 </body>
 
