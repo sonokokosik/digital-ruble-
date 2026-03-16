@@ -419,26 +419,6 @@ button:hover {background:var(--steel);}
 
 </section>
 
-  <h2>Как работает защита</h2>
-
-  <div class="hash-visual">
-
-    <div>
-
-      <input type="text" id="inputData" placeholder="Введите данные..." oninput="generateHash()">
-
-    </div>
-
-    <div class="hash-box" id="hashOutput">
-
-      Хэш появится здесь
-
-    </div>
-
-  </div>
-
-</section>
-
 <section class="cta">
 
   <h2>Будущее денег — это доверие к коду</h2>
@@ -721,8 +701,44 @@ document.getElementById("check2").innerText="Неверно ❌ Это одна 
 }
 
 }
-  function hackBlock(){
+ let hacked = false;
 
+function hackBlock(){
+
+if(!hacked){
+
+document.getElementById("block2").style.background="#8e2a2a";
+
+document.getElementById("block2").innerHTML =
+"<h3>Блок 2</h3><p>Перевод: 100000 ₽ ❌</p><p>hash: ZZZ999</p>";
+
+document.getElementById("block3").style.background="#8e2a2a";
+
+document.getElementById("hackResult").innerText =
+"Цепочка нарушена. Чтобы скрыть подмену, нужно пересчитать все следующие блоки.";
+
+hacked = true;
+
+}
+
+else{
+
+document.getElementById("block2").style.background="#3A3A3A";
+
+document.getElementById("block2").innerHTML =
+"<h3>Блок 2</h3><p>Перевод: 250 ₽</p><p>hash: B81KD</p>";
+
+document.getElementById("block3").style.background="#3A3A3A";
+
+document.getElementById("hackResult").innerText =
+"Цепочка восстановлена. Теперь блоки снова совпадают.";
+
+hacked = false;
+
+}
+
+}
+  
 document.getElementById("block2").style.background="#8e2a2a";
 
 document.getElementById("block2").innerHTML=
